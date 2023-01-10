@@ -13,6 +13,27 @@ const validation: RequestHandler = (req, res, next) => {
   next();
 };
 
+const diseaseValidation = {
+  id(location: ValidationChain) {
+    return location.isUUID();
+  },
+  name(location: ValidationChain) {
+    return location.isString().isLength({min: 7, max: 7});
+  }
+}
+
+const nightValidation = {
+  id(location: ValidationChain) {
+    return location.isInt().toInt();
+  },
+  date(location: ValidationChain) {
+    return location.isISO8601();
+  },
+  capacity(location: ValidationChain) {
+    return location.isInt({min: 0, max: 1000}).toInt();
+  }
+}
+
 const authValidation = {
   email(location: ValidationChain) {
     return location.isEmail().normalizeEmail();
@@ -44,5 +65,5 @@ const authValidation = {
 };
 
 // EXPORTS
-export {validation, authValidation};
+export {validation, authValidation, diseaseValidation, nightValidation};
 

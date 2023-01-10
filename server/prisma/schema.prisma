@@ -44,3 +44,37 @@ model User_Tokens {
   type        TokenType
   expiration  DateTime
 }
+
+model Disease {
+  id          String    @id @unique @default(uuid())
+  name        String    @unique
+  surgeries   Surgery[]
+}
+
+model Night {
+  id          Int       @id @unique @default(autoincrement())
+  date        DateTime  @unique
+  capacity    Int       @default(0)
+}
+
+model Surgery {
+  id          Int       @id @unique @default(autoincrement())
+  date        DateTime  @unique
+  capacity    Int       @default(0)
+  disease     Disease   @relation(fields: [diseaseId], references: [id])
+  diseaseId   String
+  
+  booking     Booking[]
+}
+
+model Booking {
+  id          String    @id @unique @default(uuid())
+  patient     String    @default(uuid())
+  date_night  DateTime
+  date_op     DateTime
+  nights_plan Int
+  nigths_real Int?
+
+  surgery     Surgery? @relation(fields: [surgeryId], references: [id])
+  surgeryId   Int?
+}

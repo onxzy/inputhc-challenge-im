@@ -11,10 +11,10 @@
     "http"
   ],
   "paths": {
-    "/auth/register": {
+    "/disease/new": {
       "post": {
         "tags": [
-          "Auth"
+          "Disease"
         ],
         "description": "",
         "parameters": [
@@ -24,16 +24,7 @@
             "schema": {
               "type": "object",
               "properties": {
-                "firstname": {
-                  "example": "any"
-                },
-                "lastname": {
-                  "example": "any"
-                },
-                "email": {
-                  "example": "any"
-                },
-                "password": {
+                "name": {
                   "example": "any"
                 }
               }
@@ -53,36 +44,15 @@
         }
       }
     },
-    "/auth/verify/{type}": {
-      "post": {
-        "tags": [
-          "Auth"
-        ],
-        "description": "",
-        "parameters": [
-          {
-            "name": "type",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "400": {
-            "description": "Bad Request"
-          }
-        }
-      }
-    },
-    "/auth/verify/{token}": {
+    "/disease/id/{id}": {
       "get": {
         "tags": [
-          "Auth"
+          "Disease"
         ],
         "description": "",
         "parameters": [
           {
-            "name": "token",
+            "name": "id",
             "in": "path",
             "required": true,
             "type": "string"
@@ -93,144 +63,51 @@
             "description": "Bad Request"
           }
         }
-      }
-    },
-    "/auth/recover/{email}": {
-      "post": {
-        "tags": [
-          "Auth"
-        ],
-        "description": "",
-        "parameters": [
-          {
-            "name": "email",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "400": {
-            "description": "Bad Request"
-          }
-        }
-      }
-    },
-    "/auth/user/password/{token}": {
-      "patch": {
-        "tags": [
-          "Auth"
-        ],
-        "description": "",
-        "parameters": [
-          {
-            "name": "token",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "400": {
-            "description": "Bad Request"
-          }
-        }
-      }
-    },
-    "/auth/user": {
-      "patch": {
-        "tags": [
-          "Auth"
-        ],
-        "description": "",
-        "parameters": [],
-        "responses": {
-          "400": {
-            "description": "Bad Request"
-          }
-        }
-      }
-    },
-    "/auth/login": {
-      "post": {
-        "tags": [
-          "Auth"
-        ],
-        "description": "",
-        "parameters": [
-          {
-            "name": "username",
-            "required": true,
-            "in": "query",
-            "type": "string"
-          },
-          {
-            "name": "password",
-            "required": true,
-            "in": "query",
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/auth/callback/{google}": {
-      "get": {
-        "tags": [
-          "Auth"
-        ],
-        "description": "",
-        "parameters": [
-          {
-            "name": "google",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/auth/get": {
-      "get": {
-        "tags": [
-          "Auth"
-        ],
-        "description": "",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/auth/logout": {
+      },
       "delete": {
         "tags": [
-          "Auth"
+          "Disease"
         ],
         "description": "",
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
           }
         }
       }
     },
-    "/user/new": {
+    "/disease/find": {
+      "get": {
+        "tags": [
+          "Disease"
+        ],
+        "description": "",
+        "parameters": [],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/night/new": {
       "post": {
         "tags": [
-          "User"
+          "Night"
         ],
         "description": "",
         "parameters": [
@@ -240,19 +117,10 @@
             "schema": {
               "type": "object",
               "properties": {
-                "firstname": {
+                "date": {
                   "example": "any"
                 },
-                "lastname": {
-                  "example": "any"
-                },
-                "email": {
-                  "example": "any"
-                },
-                "role": {
-                  "example": "any"
-                },
-                "password": {
+                "capacity": {
                   "example": "any"
                 }
               }
@@ -272,50 +140,10 @@
         }
       }
     },
-    "/user/email/{email}": {
+    "/night/id/{id}": {
       "get": {
         "tags": [
-          "User"
-        ],
-        "description": "",
-        "parameters": [
-          {
-            "name": "email",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "400": {
-            "description": "Bad Request"
-          }
-        }
-      }
-    },
-    "/user/id/{id}": {
-      "get": {
-        "tags": [
-          "User"
-        ],
-        "description": "",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "400": {
-            "description": "Bad Request"
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "User"
+          "Night"
         ],
         "description": "",
         "parameters": [
@@ -334,7 +162,44 @@
       },
       "patch": {
         "tags": [
-          "User"
+          "Night"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "capacity": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Night"
         ],
         "description": "",
         "parameters": [
@@ -346,36 +211,41 @@
           }
         ],
         "responses": {
-          "400": {
-            "description": "Bad Request"
-          }
-        }
-      }
-    },
-    "/user/find": {
-      "get": {
-        "tags": [
-          "User"
-        ],
-        "description": "",
-        "parameters": [],
-        "responses": {
-          "400": {
-            "description": "Bad Request"
-          }
-        }
-      }
-    },
-    "/api/get_error_msg": {
-      "get": {
-        "tags": [
-          "Config"
-        ],
-        "description": "",
-        "parameters": [],
-        "responses": {
           "200": {
             "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/night/find": {
+      "get": {
+        "tags": [
+          "Night"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "date_start",
+            "required": true,
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "date_end",
+            "required": true,
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
           }
         }
       }
