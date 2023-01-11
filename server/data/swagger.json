@@ -5,7 +5,7 @@
     "title": "Express BP",
     "description": "Boilerplate for Node.js Backend"
   },
-  "host": "localhost:5000",
+  "host": "https://inputhc.onxzy.dev",
   "basePath": "/api/",
   "schemes": [
     "http"
@@ -259,12 +259,14 @@
         "parameters": [
           {
             "name": "date_start",
+            "required": true,
             "type": "string",
             "description": "yyyy-mm-dd",
             "in": "query"
           },
           {
             "name": "date_end",
+            "required": true,
             "type": "string",
             "description": "yyyy-mm-dd",
             "in": "query"
@@ -420,6 +422,35 @@
             "required": true,
             "in": "query",
             "type": "string"
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/surgery/available": {
+      "get": {
+        "tags": [
+          "Surgery"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "date_start",
+            "required": true,
+            "type": "string",
+            "description": "yyyy-mm-dd",
+            "in": "query"
+          },
+          {
+            "name": "date_end",
+            "required": true,
+            "type": "string",
+            "description": "yyyy-mm-dd",
+            "in": "query"
           }
         ],
         "responses": {
