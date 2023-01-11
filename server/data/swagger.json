@@ -5,10 +5,10 @@
     "title": "Express BP",
     "description": "Boilerplate for Node.js Backend"
   },
-  "host": "https://inputhc.onxzy.dev",
+  "host": "inputhc.onxzy.dev",
   "basePath": "/api/",
   "schemes": [
-    "http"
+    "https"
   ],
   "paths": {
     "/disease/new": {
