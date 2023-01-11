@@ -1,3 +1,8 @@
+import { config as dotenv } from 'dotenv';
+dotenv({
+  path: `${__dirname}/../../../.env`
+});
+
 import swaggerAutogen from 'swagger-autogen';
 const doc = {
   info: {
@@ -5,8 +10,8 @@ const doc = {
     title: 'Express BP',
     description: 'Boilerplate for Node.js Backend',
   },
-  host: 'inputhc.onxzy.dev',      // by default: 'localhost:3000'
-  basePath: '/api/',
+  host: process.env.API_URL ? process.env.API_URL.replace('https://','').replace('http://','') : 'localhost:5000',      // by default: 'localhost:3000'
+  basePath: process.env.API_PATH ? process.env.API_PATH : '/api/',
   schemes: ['https'],   // by default: ['http']
   // consumes: [],  // by default: ['application/json']
   // produces: [],  // by default: ['application/json']
@@ -23,7 +28,7 @@ const doc = {
   // components: {}            // by default: empty object (OpenAPI 3.x)
 };
 
-const outputFile = `${__dirname}/../../../data/swagger.json`;
+const outputFile = `${__dirname}/../../../dist/swagger.json`;
 const endpointsFiles = [
   // `${__dirname}/../routes/api/auth.js`, `${__dirname}/../routes/api/user.js`, `${__dirname}/../routes/api.js`,
   `${__dirname}/../routes/api/disease.js`, `${__dirname}/../routes/api/night.js`, `${__dirname}/../routes/api/surgery.js`,

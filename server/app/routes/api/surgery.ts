@@ -190,8 +190,6 @@ router.get('/available',
         nb_of_days++;
       }
 
-      console.log(availability.length);
-      console.log(nb_of_days);
       res.json(availability);
     } catch (error) {
       next(error);

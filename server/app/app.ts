@@ -32,7 +32,7 @@ app.use(session({
 require('./middlewares/passport');
 app.use(passport.session());
 
-const swaggerDocument = require('../../data/swagger.json');
+const swaggerDocument = require('../swagger.json');
 app.use('/doc', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // ROUTES

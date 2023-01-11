@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "concurrently \"npx tsc --watch\" \"nodemon -q dist/server.js --ignore data\"",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "swagger": "npx tsc && node dist/app/utils/swagger.js"
+
+    "build": "npx tsc && node dist/app/utils/swagger.js",
+    "start": "node dist/server.js"
   },
   "author": "onxzy",
   "license": "ISC",
