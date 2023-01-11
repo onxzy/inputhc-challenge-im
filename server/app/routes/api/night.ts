@@ -73,19 +73,27 @@ router.get('/find',
     }  
   });
 
-router.patch('/id/:id',
+router.patch('/date/:date',
   // #swagger.tags = ['Night']
-  // #swagger.path = '/night/id/{id}'
+  // #swagger.path = '/night/date/{date}'
 
-  nightValidation.id(param('id')),
+  nightValidation.date(param('date')),
   nightValidation.capacity(body('capacity')),
   validation,
 
   async (req, res, next) => {
     try {
-      const night = await prisma.night.update({
-        where: {id: parseInt(req.params.id)},
-        data: {capacity: parseInt(req.body.capacity)}});
+      const night = await prisma.night.upsert({
+        where: {
+          date: new Date(req.params.date),
+        },
+        update: {
+          capacity: parseInt(req.body.capacity),
+        },
+        create : {
+          date: new Date(req.params.date),
+          capacity: parseInt(req.body.capacity),
+        }});
       return res.json(night);
     } catch (error: any) {
       if (error.code == 'P2025') return res.sendStatus(404);
