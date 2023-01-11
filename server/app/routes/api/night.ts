@@ -74,7 +74,7 @@ router.get('/find',
       if (req.query.simple_array) {
         
         const date_start = req.query.date_start ? new Date(String(req.query.date_start)) : nights[0].date;
-        const date_end = req.query.date_end ? new Date(String(req.query.date_end)) : nights[-1].date;
+        const date_end = req.query.date_end ? new Date(String(req.query.date_end)) : nights[nights.length - 1].date;
         const days = Math.ceil((date_end.getTime() - date_start.getTime()) / (1000 * 3600 * 24)) + 1;
 
         const simple_array : number[] = new Array(days).fill(0);
@@ -84,9 +84,11 @@ router.get('/find',
 
           for (let j = 0; j < nights.length; j++) {
             const n = nights[j];
-            if (n.date.getTime() == d.getTime()) {
+            if (n.date.toDateString() == d.toDateString()) {
               simple_array[i] = n.capacity;
+              nights.splice(j, 1);
               break;
+            } else {
             }
           }
           i++;
@@ -183,22 +185,26 @@ router.get('/available',
         })
       })
 
-      const availability: number[] = [];
+      const date_start =new Date(String(req.query.date_start));
+      const date_end = new Date(String(req.query.date_end));
+      const days = Math.ceil((date_end.getTime() - date_start.getTime()) / (1000 * 3600 * 24)) + 1;
+
+      const availability: number[] = new Array(days).fill(0);
 
       let nb_of_days = 0;
-      for (var d = new Date(String(req.query.date_start)); d <= new Date(String(req.query.date_end)); d.setDate(d.getDate() + 1)) {
-        let nightAtDate = false; // True if there is a Night capacity at that Date
-        for (let i = 0; i < nights.length; i++) {
-          const n = nights[i];
-          if (n.date.getTime() == d.getTime()) {
-            availability.push(n.capacity);
-            nightAtDate = true;
+      let i = 0
+      for (var d = new Date(date_start); d <= date_end; d.setDate(d.getDate() + 1)) {
+        for (let j = 0; j < nights.length; j++) {
+          const n = nights[j];
+          if (n.date.toDateString() == d.toDateString()) {
+            availability[i] = n.capacity;
+            nights.splice(j, 1);
             break;
           }
         }
 
-        if (!nightAtDate) availability.push(0);
         nb_of_days++;
+        i++;
       }
 
       return res.json(availability);
@@ -245,7 +251,7 @@ router.get('/usage/:mode',
 
         let i = 0;
         for (var d = new Date(String(req.query.date_start)); d <= new Date(String(req.query.date_end)); d.setDate(d.getDate() + 1)) {
-          if (d.getTime() == date_night_min.getTime()) {
+          if (d.toDateString() == date_night_min.toDateString()) {
             for (let j = 0; j < nights_count; j++) {
               usage[i+j] += 1;
             }
