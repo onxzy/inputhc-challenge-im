@@ -5,9 +5,9 @@ const doc = {
     title: 'Express BP',
     description: 'Boilerplate for Node.js Backend',
   },
-  host: 'https://inputhc.onxzy.dev',      // by default: 'localhost:3000'
+  host: 'inputhc.onxzy.dev',      // by default: 'localhost:3000'
   basePath: '/api/',
-  // schemes: [],   // by default: ['http']
+  schemes: ['https'],   // by default: ['http']
   // consumes: [],  // by default: ['application/json']
   // produces: [],  // by default: ['application/json']
   // tags: [        // by default: empty Array
