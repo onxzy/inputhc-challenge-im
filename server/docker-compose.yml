@@ -2,7 +2,11 @@ version: "3.9"
 name: challenge-im
 services:
   challenge-im:
-    build: .
+    build: 
+      context: .
+      args:
+        - API_URL
+        - API_PATH
     ports:
       - "${PORT}:5000"
     environment:
