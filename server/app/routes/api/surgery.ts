@@ -23,7 +23,7 @@ router.post('/new',
 
   surgeryValidation.date(body('date')),
   surgeryValidation.capacity(body('capacity')),
-  diseaseValidation.id(body('disease')),
+  diseaseValidation.name(body('disease')),
   validation,
 
   async (req, res, next) => {
@@ -33,7 +33,7 @@ router.post('/new',
           date: new Date(req.body.date),
           capacity: parseInt(req.body.capacity),
           disease: {
-            connect: {id: req.body.disease}
+            connect: {name: req.body.disease}
           }
         },
         include: {
@@ -63,11 +63,13 @@ router.get('/id/:id',
 router.get('/find',
   // #swagger.tags = ['Surgery']
   // #swagger.path = '/surgery/find'
-  // #swagger.parameters['date_start'] = {required: true }
-  // #swagger.parameters['date_end'] = {required: true } 
+  // #swagger.parameters['date_start'] = {description: 'yyyy-mm-dd' }
+  // #swagger.parameters['date_end'] = {description: 'yyyy-mm-dd' }
+  // #swagger.parameters['disease'] = {type: 'string' }
 
   surgeryValidation.date(query('date_start')).optional(),
   surgeryValidation.date(query('date_end')).optional(),
+  diseaseValidation.name(query('disease')).optional(),
   validation,
 
   async (req, res, next) => {
@@ -77,6 +79,7 @@ router.get('/find',
           lte: req.query.date_end ? new Date(String(req.query.date_end)) : undefined,
           gte: req.query.date_start ? new Date(String(req.query.date_start)) : undefined,
         },
+        diseaseName: req.query.disease ? String(req.query.disease) : undefined,
       }});
       return res.json(surgeries);  
     } catch (error) {
@@ -90,12 +93,12 @@ router.patch('/id/:id',
 
   surgeryValidation.id(param('id')),
   surgeryValidation.capacity(body('capacity')),
-  diseaseValidation.id(body('disease')),
+  diseaseValidation.name(body('disease')),
   validation,
 
   async (req, res, next) => {
     try {
-      const disease = await prisma.disease.findUnique({where: {id: req.params.id}});
+      const disease = await prisma.disease.findUnique({where: {name: req.params.disease}});
       if (!disease) return void res.status(404).json({err: errorMsg.disease.unknown});
 
       const surgery = await prisma.surgery.update({
@@ -103,7 +106,45 @@ router.patch('/id/:id',
         data: {
           capacity: parseInt(req.body.capacity),
           disease: {
-            connect: {id: req.body.disease}
+            connect: {name: req.body.disease}
+          }
+        }});
+      return res.json(surgery);
+    } catch (error: any) {
+      if (error.code == 'P2025') return res.sendStatus(404);
+      return next(error);
+    }
+  });
+
+router.patch('/capacity',
+  // #swagger.tags = ['Surgery']
+  // #swagger.path = '/surgery/capacity'
+
+  surgeryValidation.date(body('date')),
+  surgeryValidation.capacity(body('capacity')),
+  diseaseValidation.name(body('disease')),
+  validation,
+
+  async (req, res, next) => {
+    try {
+      const disease = await prisma.disease.findUnique({where: {name: req.params.disease}});
+      if (!disease) return void res.status(404).json({err: errorMsg.disease.unknown});
+
+      const surgery = await prisma.surgery.upsert({
+        where: {
+          date_diseaseName : {
+            date: new Date(req.body.date),
+            diseaseName: req.body.disease,
+          } 
+        },
+        update: {
+          capacity: parseInt(req.body.capacity)
+        },
+        create: {
+          date: new Date(req.body.date),
+          capacity: parseInt(req.body.capacity),
+          disease: {
+            connect: {name: req.body.disease}
           }
         }});
       return res.json(surgery);
@@ -136,16 +177,17 @@ router.get('/available',
   // #swagger.path = '/surgery/available'
   // #swagger.parameters['date_start'] = {required: true, type: 'string', description: 'yyyy-mm-dd'}
   // #swagger.parameters['date_end'] = {required: true, type: 'string', description: 'yyyy-mm-dd'}
+  // #swagger.parameters['disease'] = {required: true, type: 'string', description: 'disease name'}
 
   surgeryValidation.date(query('date_start')),
   surgeryValidation.date(query('date_end')),
-  diseaseValidation.id(query('disease')),
+  diseaseValidation.name(query('disease')),
   validation,
 
   async (req, res, next) => {
     try {
       const surgery = await prisma.surgery.findMany({where: {
-        diseaseId: String(req.query.disease),
+        diseaseName: String(req.query.disease),
         date: {
           lte: new Date(String(req.query.date_end)),
           gte: new Date(String(req.query.date_start)),

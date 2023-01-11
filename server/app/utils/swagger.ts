@@ -12,7 +12,7 @@ const doc = {
   },
   host: process.env.API_URL ? process.env.API_URL.replace('https://','').replace('http://','') : 'localhost:5000',      // by default: 'localhost:3000'
   basePath: process.env.API_PATH ? process.env.API_PATH : '/api/',
-  schemes: ['https'],   // by default: ['http']
+  schemes: [process.env.API_URL ? process.env.API_URL.split('://', 1)[0] : 'http'],   // by default: ['http']
   // consumes: [],  // by default: ['application/json']
   // produces: [],  // by default: ['application/json']
   // tags: [        // by default: empty Array

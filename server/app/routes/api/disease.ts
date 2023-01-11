@@ -48,6 +48,19 @@ router.get('/id/:id',
       return void res.json(disease);
   }));
 
+router.get('/name/:name',
+  // #swagger.tags = ['Disease']
+  // #swagger.path = '/disease/name/{name}'
+
+  diseaseValidation.name(param('name')),
+  validation,
+
+  handleError(async (req, res, next) => {
+      const disease = await prisma.disease.findUnique({where: {name: req.params.name}});
+      if (!disease) return void res.sendStatus(404);
+      return void res.json(disease);
+  }));
+
 router.get('/find',
   // #swagger.tags = ['Disease']
   // #swagger.path = '/disease/find'
@@ -76,6 +89,24 @@ router.delete('/id/:id',
   async (req, res, next) => {
     try {
       const disease = await prisma.disease.delete({where: {id: req.params.id}});
+      return res.send();
+
+    } catch (error: any) { 
+      if (error.code == 'P2025') return res.sendStatus(404);
+      return next(error);
+    }
+  });
+
+router.delete('/name/:name',
+  // #swagger.tags = ['Disease']
+  // #swagger.path = '/disease/id/{id}'
+
+  diseaseValidation.name(param('name')),
+  validation,
+
+  async (req, res, next) => {
+    try {
+      const disease = await prisma.disease.delete({where: {name: req.params.name}});
       return res.send();
 
     } catch (error: any) { 

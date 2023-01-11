@@ -18,7 +18,8 @@ const diseaseValidation = {
     return location.isUUID();
   },
   name(location: ValidationChain) {
-    return location.isString().isLength({min: 7, max: 7});
+    // return location.isString().isLength({min: 7, max: 7});
+    return location;
   }
 }
 

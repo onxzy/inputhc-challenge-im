@@ -42,6 +42,9 @@ router.post('/new',
           surgery: {
             connect: {id: req.body.surgery}
           }
+        },
+        include: {
+          surgery: true
         }
       });
       return res.json(booking);

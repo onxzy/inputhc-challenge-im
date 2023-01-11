@@ -59,12 +59,14 @@ model Night {
 
 model Surgery {
   id          Int       @id @unique @default(autoincrement())
-  date        DateTime  @unique
+  date        DateTime
   capacity    Int       @default(0)
-  disease     Disease   @relation(fields: [diseaseId], references: [id])
-  diseaseId   String
+  disease     Disease   @relation(fields: [diseaseName], references: [name])
+  diseaseName   String
   
   booking     Booking[]
+
+  @@unique([date, diseaseName])
 }
 
 model Booking {
