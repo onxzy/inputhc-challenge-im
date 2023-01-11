@@ -69,7 +69,9 @@ model Surgery {
 
 model Booking {
   id          String    @id @unique @default(uuid())
-  patient     String    @default(uuid())
+  firstName   String    
+  lastName    String
+  email       String
   date_night  DateTime
   date_op     DateTime
   nights_plan Int

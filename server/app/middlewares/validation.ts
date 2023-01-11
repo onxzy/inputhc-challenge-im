@@ -34,6 +34,36 @@ const nightValidation = {
   }
 }
 
+const surgeryValidation = {
+  id(location: ValidationChain) {
+    return location.isInt().toInt();
+  },
+  date(location: ValidationChain) {
+    return location.isISO8601();
+  },
+  capacity(location: ValidationChain) {
+    return location.isInt({min: 0, max: 1000}).toInt();
+  }
+}
+
+const bookingValidation = {
+  id(location: ValidationChain) {
+    return location.isUUID();
+  },
+  name(location: ValidationChain) {
+    return location.isString().isLength({min: 2, max: 64});
+  },
+  email(location: ValidationChain) {
+    return location.isEmail().normalizeEmail();
+  },
+  date(location: ValidationChain) {
+    return location.isISO8601();
+  },
+  nights(location: ValidationChain) {
+    return location.isInt().toInt();
+  },
+}
+
 const authValidation = {
   email(location: ValidationChain) {
     return location.isEmail().normalizeEmail();
@@ -65,5 +95,5 @@ const authValidation = {
 };
 
 // EXPORTS
-export {validation, authValidation, diseaseValidation, nightValidation};
+export {validation, authValidation, diseaseValidation, nightValidation, surgeryValidation, bookingValidation};
 

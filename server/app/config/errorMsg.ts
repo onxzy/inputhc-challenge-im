@@ -16,6 +16,9 @@ const errorMsg = {
     bad_password: 'auth:bad_password',
     not_found: 'auth:not_found',
   },
+  disease: {
+    unknown: 'disease:unknown'
+  }
 };
 
 

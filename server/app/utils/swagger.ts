@@ -26,7 +26,8 @@ const doc = {
 const outputFile = `${__dirname}/../../../data/swagger.json`;
 const endpointsFiles = [
   // `${__dirname}/../routes/api/auth.js`, `${__dirname}/../routes/api/user.js`, `${__dirname}/../routes/api.js`,
-  `${__dirname}/../routes/api/disease.js`, `${__dirname}/../routes/api/night.js`];
+  `${__dirname}/../routes/api/disease.js`, `${__dirname}/../routes/api/night.js`, `${__dirname}/../routes/api/surgery.js`,
+  `${__dirname}/../routes/api/booking.js`];
 
 
 /* NOTE: if you use the express Router, you must pass in the 
