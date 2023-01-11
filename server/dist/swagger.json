@@ -1,0 +1,648 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "0.1",
+    "title": "Express BP",
+    "description": "Boilerplate for Node.js Backend"
+  },
+  "host": "inputhc.onxzy.dev",
+  "basePath": "/api/",
+  "schemes": [
+    "https"
+  ],
+  "paths": {
+    "/disease/new": {
+      "post": {
+        "tags": [
+          "Disease"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "409": {
+            "description": "Conflict"
+          }
+        }
+      }
+    },
+    "/disease/id/{id}": {
+      "get": {
+        "tags": [
+          "Disease"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Disease"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/disease/find": {
+      "get": {
+        "tags": [
+          "Disease"
+        ],
+        "description": "",
+        "parameters": [],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/night/new": {
+      "post": {
+        "tags": [
+          "Night"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "date": {
+                  "example": "any"
+                },
+                "capacity": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "409": {
+            "description": "Conflict"
+          }
+        }
+      }
+    },
+    "/night/id/{id}": {
+      "get": {
+        "tags": [
+          "Night"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Night"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "capacity": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Night"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/night/find": {
+      "get": {
+        "tags": [
+          "Night"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "date_start",
+            "required": true,
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "date_end",
+            "required": true,
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/night/available": {
+      "get": {
+        "tags": [
+          "Night"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "date_start",
+            "required": true,
+            "type": "string",
+            "description": "yyyy-mm-dd",
+            "in": "query"
+          },
+          {
+            "name": "date_end",
+            "required": true,
+            "type": "string",
+            "description": "yyyy-mm-dd",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/surgery/new": {
+      "post": {
+        "tags": [
+          "Surgery"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "date": {
+                  "example": "any"
+                },
+                "capacity": {
+                  "example": "any"
+                },
+                "disease": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "409": {
+            "description": "Conflict"
+          }
+        }
+      }
+    },
+    "/surgery/id/{id}": {
+      "get": {
+        "tags": [
+          "Surgery"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Surgery"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "capacity": {
+                  "example": "any"
+                },
+                "disease": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Surgery"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/surgery/find": {
+      "get": {
+        "tags": [
+          "Surgery"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "date_start",
+            "required": true,
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "date_end",
+            "required": true,
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/surgery/available": {
+      "get": {
+        "tags": [
+          "Surgery"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "date_start",
+            "required": true,
+            "type": "string",
+            "description": "yyyy-mm-dd",
+            "in": "query"
+          },
+          {
+            "name": "date_end",
+            "required": true,
+            "type": "string",
+            "description": "yyyy-mm-dd",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/booking/new": {
+      "post": {
+        "tags": [
+          "Booking"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "firstName": {
+                  "example": "any"
+                },
+                "lastName": {
+                  "example": "any"
+                },
+                "email": {
+                  "example": "any"
+                },
+                "date_night": {
+                  "example": "any"
+                },
+                "date_op": {
+                  "example": "any"
+                },
+                "nights_plan": {
+                  "example": "any"
+                },
+                "surgery": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "409": {
+            "description": "Conflict"
+          }
+        }
+      }
+    },
+    "/booking/id/{id}": {
+      "get": {
+        "tags": [
+          "Booking"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Booking"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "date_night": {
+                  "example": "any"
+                },
+                "date_op": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Booking"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/booking/find": {
+      "get": {
+        "tags": [
+          "Booking"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "firstName",
+            "type": "string",
+            "in": "query"
+          },
+          {
+            "name": "lastName",
+            "type": "string",
+            "in": "query"
+          },
+          {
+            "name": "email",
+            "type": "string",
+            "in": "query"
+          },
+          {
+            "name": "date_start",
+            "type": "string",
+            "description": "yyyy-mm-dd",
+            "in": "query"
+          },
+          {
+            "name": "date_end",
+            "type": "string",
+            "description": "yyyy-mm-dd",
+            "in": "query"
+          },
+          {
+            "name": "surgery",
+            "type": "int",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    }
+  }
+}
