@@ -1,4 +1,4 @@
-FROM node:16.18-alpine AS builder
+FROM node:16-bullseye AS builder
 
 WORKDIR /app
 
@@ -9,7 +9,7 @@ COPY prisma ./prisma/
 COPY . .
 RUN npm run build
 
-FROM node:16.18-alpine
+FROM node:16-bullseye
 
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package*.json ./

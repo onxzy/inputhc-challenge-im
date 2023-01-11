@@ -4,8 +4,8 @@ import { Express } from 'express';
 function getFileList(startdir: string, dir = '') {
   let files: string[] = [];
   const items = (dir)
-      ? fs.readdirSync(`app/${startdir}${dir}`, {withFileTypes: true})
-      : fs.readdirSync(`app/${startdir}`, {withFileTypes: true});
+      ? fs.readdirSync(`${__dirname}/../${startdir}${dir}`, {withFileTypes: true})
+      : fs.readdirSync(`${__dirname}/../${startdir}`, {withFileTypes: true});
 
   for (const item of items) {
     if (item.isDirectory()) {
