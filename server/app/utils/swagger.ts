@@ -5,8 +5,8 @@ const doc = {
     title: 'Express BP',
     description: 'Boilerplate for Node.js Backend',
   },
-  host: 'localhost:5000',      // by default: 'localhost:3000'
-  basePath: '/api/',
+  host: process.env.API_URL,      // by default: 'localhost:3000'
+  basePath: process.env.API_PATH,
   // schemes: [],   // by default: ['http']
   // consumes: [],  // by default: ['application/json']
   // produces: [],  // by default: ['application/json']
