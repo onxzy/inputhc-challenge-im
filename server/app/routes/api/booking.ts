@@ -14,7 +14,100 @@ import { authNZ } from '../../middlewares/passport';
 import { patchUser, newUser } from '../../services/auth';
 import { Provider, Role } from '@prisma/client';
 import { AuthPermissions } from '../../config/authPermissions';
+import { spawn } from 'child_process';
 
+
+router.post('/ask',
+  // #swagger.tags = ['Booking']
+  // #swagger.path = '/booking/ask'
+  // #swagger.description = 'Insert the reservation at the most optimal time'
+
+  bookingValidation.name(body('firstName')).optional(),
+  bookingValidation.name(body('lastName')).optional(),
+  bookingValidation.email(body('email')).optional(),
+  diseaseValidation.name(body('disease')),
+  body('acte').isString().isLength({min:6, max:8}),
+  validation,
+
+  (req, res, next) => {
+    // Lancer l'analyse
+    const date_end = new Date(req.body.date_start);
+    date_end.setDate(date_end.getDate() + parseInt(req.body.max_days) - 1);
+
+    let stdout = '';
+    let stderr = '';
+    const script = spawn(
+      `python3`,
+      [`${__dirname}/../../../../scripts/main.py`, req.body.age, req.body.sex, req.body.acte, req.body.date_start, date_end.toISOString().split('T')[0], req.body.max_days],
+      {cwd: `${__dirname}/../../../../scripts/`})
+
+    script.on('error', (err) => {
+      console.log('error')
+      console.error(err.toString())
+      res.status(500).json(err.toString()) 
+    });
+
+    script.stdout.on('data', (data) => {
+      console.log('stdout')
+      console.log(data.toString())
+      stdout += data.toString(); 
+    });
+
+    script.stderr.on('data', (msg) => {
+      console.log('stderr')
+      console.error(msg.toString())
+      stderr += msg.toString();
+    });
+
+    script.on('close', async () => {
+      if (stderr) return res.status(500).send(stderr);
+      if (!stdout) return res.status(500).send();
+
+      const scriptReturn = JSON.parse(stdout);
+      console.log(scriptReturn);
+
+      if (scriptReturn.err) return res.status(500).json(scriptReturn);
+
+      const date_night = new Date(req.body.date_start);
+      date_night.setDate(date_night.getDate() + scriptReturn.booking);
+      const date_op = new Date(date_night);
+      date_op.setDate(date_op.getDate() + 1);
+
+      try {
+        const surgery = await prisma.surgery.findUnique({where: {
+          date_diseaseName : {
+            date: date_op,
+            diseaseName:  String(req.query.disease),
+          }
+        }}); 
+  
+        if (!surgery) return res.status(500).json({
+          err: 'no surgery',
+          date_night, date_op, nights_plan: scriptReturn.nights,
+        })
+  
+        const booking = await prisma.booking.create({
+          data: {
+            date_night,
+            date_op,
+            nights_plan: scriptReturn.nights,
+            surgery: {
+              connect: {id: surgery.id}
+            }
+          },
+          include: {
+            surgery: true
+          }
+        });
+        return res.json(booking);
+        
+      } catch (error) {
+        return next(error)
+      }
+    })
+
+    // Indiquer quand ça a été placé
+  })
 
 router.post('/new',
   // #swagger.tags = ['Booking']

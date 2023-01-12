@@ -10,9 +10,16 @@ import bodyParser from 'body-parser';
 import session from 'express-session';
 import passport from 'passport';
 import swaggerUi from 'swagger-ui-express';
+const cors = require('cors');
 
 // SECURITE
 app.use(helmet());
+app.use(cors({
+  origin: '*',
+  exposedHeaders: ['Content-Type', 'Authorization'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true,
+}));
 
 // MIDLEWARES
 app.use(bodyParser.json());

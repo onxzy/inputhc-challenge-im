@@ -9,3 +9,5 @@ npm-debug.log
 .env.example
 
 .eslintrc.js
+
+scripts/.venv
