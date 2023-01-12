@@ -77,7 +77,7 @@ router.post('/ask',
         const surgery = await prisma.surgery.findUnique({where: {
           date_diseaseName : {
             date: date_op,
-            diseaseName:  String(req.query.disease),
+            diseaseName:  String(req.body.disease),
           }
         }}); 
   
@@ -100,7 +100,7 @@ router.post('/ask',
           }
         });
         return res.json(booking);
-        
+
       } catch (error) {
         return next(error)
       }
