@@ -1,3 +1,6 @@
+import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3' 
+
 import json
 import requests
 url = 'https://inputhc.onxzy.dev/api/'
@@ -5,7 +8,6 @@ url = 'https://inputhc.onxzy.dev/api/'
 import random
 import matplotlib
 import math
-import pickle
 
 import warnings
 warnings.filterwarnings("ignore", category=UserWarning)
@@ -14,17 +16,22 @@ import sklearn
 import sys
 #import xgboost
 import pandas as pd
+pd.options.mode.chained_assignment = None
 
-pickled_model = pickle.load(open('data/model.pkl', 'rb'))
+from keras.models import load_model
+model = load_model('data/model.h5')
+
+import pickle
+# pickled_model = pickle.load(open('data/model.pkl', 'rb'))
 
 # BdD : lits - operations - booking ( avec nom patient | date oeration etc... )
 # on commence par un test sur un mois de 30 jours
 # 2 types de couchage : lit ( arrivee a l'hopital la veille de l'operation ) / ambulatoire ( pour le jour de l'opération )
 
-if (len(sys.argv)) != 7 :
+if (len(sys.argv)) != 8 :
     print(json.dumps({
         "err": "argv",
-        "help": "_ age sex acte date_start date_end days_count"
+        "help": "_ age sex cmd acte date_start date_end days_count"
     }))
     exit(1)
 
@@ -37,10 +44,11 @@ except:
 ### ARGUMENTS
 age = int(sys.argv[1]) # 42
 sex = int(sys.argv[2]) # 1
-acte = sys.argv[3] # LMMA009
-date_start = sys.argv[4]
-date_end = sys.argv[5]
-nb_jour_planning = int(sys.argv[6])
+cmd = sys.argv[3] # 06 (C25)
+acte = sys.argv[4] # LMMA009
+date_start = sys.argv[5]
+date_end = sys.argv[6]
+nb_jour_planning = int(sys.argv[7])
 
 ### BDD
 r1 = requests.get(url + "night/usage/real?date_start="+date_start+"&date_end="+date_end)
@@ -49,100 +57,72 @@ if (r1.status_code != 200):
     exit()
 occupation = r1.json()
 if (len(occupation) != nb_jour_planning) :
-    print(json.dumps({"err": "nights_usage_length", "got": len(occupation), "expected": nb_jour_planning}))
+    print(json.dumps({"err": "nights_usage_length", "got": len(occupation), "expected": nb_jour_planning, "url": r1.url}))
     exit()
 
 r2 = requests.get(url + "night/find?simple_array=1&date_start="+date_start+"&date_end="+date_end)
 if (r2.status_code != 200):
-    print(json.dumps({"err": "get_nights_find", "code": r1.status_code, "url": r1.url}))
+    print(json.dumps({"err": "get_nights_find", "code": r2.status_code, "url": r2.url}))
     exit()
 nb_lits = r2.json()
 if (len(nb_lits) != nb_jour_planning) :
-    print(json.dumps({"err": "nights_find_length", "got": len(occupation), "expected": nb_jour_planning}))
+    print(json.dumps({"err": "nights_find_length", "got": len(nb_lits), "expected": nb_jour_planning, "url": r2.url}))
     exit()
 
-# occupation = [0] * nb_jour_planning #BDD usage
-# nb_lits = [0] * nb_jour_planning #BDD find # nb arbritaire de lits totaux dispos, a adapter # a faire varier !
-nb_blocs = [0] * nb_jour_planning #BDD    # nb arbritaire de blocs dispos, sans prendre en compte de quelconque marge pour les urgences pour le moment
-
+r3 = requests.get(url + "surgery/available?date_start="+date_start+"&date_end="+date_end+"&disease="+cmd)
+if (r3.status_code != 200):
+    print(json.dumps({"err": "get_surgeries_find", "code": r3.status_code, "url": r3.url}))
+    exit()
+nb_blocs = r3.json()
+if (len(nb_blocs) != nb_jour_planning) :
+    print(json.dumps({"err": "surgeries_find_length", "got": len(nb_blocs), "expected": nb_jour_planning, "url": r3.url}))
+    exit()
 
 seuil = [0] * nb_jour_planning # seuil de 1 à 4 pour la couleur des cases + 0 pour 'pas de bloc' le jour de l'operation + ajouter 10 / 20 / 30 / 40 selon la dispo des deambulatoires
 classement = [0] * 10 # liste des 10 meilleurs jours pour l'algo
 
-# for i in range(nb_jour_planning):
-#     nb_lits[i] = random.randint(80,120)  # remplissage aleatoire du nombre de lits fournis par l'hosto
+def open_conv(path) :
+    df = pd.read_csv(path, encoding='latin-1',sep=',',header=None)
+    df.columns = df.iloc[0]
+    df = df.drop(0)
+    df = df[['GHM','acte_classant','duree_mediane']]
+    return(df)
 
-# for i in range(nb_jour_planning):
-#     occupation[i] = random.randint(20,nb_lits[i])  # remplissage aleatoire des lits dispos dans le planning
-
-for i in range(nb_jour_planning):
-    nb_blocs[i] = random.randint(0,7)  # remplissage aleatoire blocs dispos dans le planning
-
-def make_df(age, sexe, acte):
-    df = pd.DataFrame(columns=['age', 'sexe_1', 'sexe_2', 'acte_classant_BEFA008',
-       'acte_classant_BFGA004', 'acte_classant_BFGA427',
-       'acte_classant_BGMA002', 'acte_classant_CAMA013',
-       'acte_classant_DEKA001', 'acte_classant_DELF005',
-       'acte_classant_EBLA003', 'acte_classant_EEAF002',
-       'acte_classant_EEAF006', 'acte_classant_EGFA002',
-       'acte_classant_FAFA006', 'acte_classant_FAFA010',
-       'acte_classant_FAFA014', 'acte_classant_FAFA015',
-       'acte_classant_GAMA007', 'acte_classant_HCFA008',
-       'acte_classant_HCFA009', 'acte_classant_HEAE003',
-       'acte_classant_HEQE002', 'acte_classant_HFCC003',
-       'acte_classant_HFFC004', 'acte_classant_HFFC018',
-       'acte_classant_HFMC001', 'acte_classant_HHFA002',
-       'acte_classant_HHFA008', 'acte_classant_HHFA016',
-       'acte_classant_HHFE002', 'acte_classant_HHFE004',
-       'acte_classant_HHFE006', 'acte_classant_HJDC001',
-       'acte_classant_HJFA004', 'acte_classant_HKPA007',
-       'acte_classant_HMFC004', 'acte_classant_JANE002',
-       'acte_classant_JCGE001', 'acte_classant_JCGE006',
-       'acte_classant_JCLE002', 'acte_classant_JDDB005',
-       'acte_classant_JDFE001', 'acte_classant_JDFE002',
-       'acte_classant_JDFE003', 'acte_classant_JDPE002',
-       'acte_classant_JELA002', 'acte_classant_JGFA005',
-       'acte_classant_JGFC001', 'acte_classant_JGFE023',
-       'acte_classant_JJFC003', 'acte_classant_JJFC006',
-       'acte_classant_JJFC010', 'acte_classant_JKDC001',
-       'acte_classant_JKFA006', 'acte_classant_JKFA028',
-       'acte_classant_JKFC003', 'acte_classant_JKFC005',
-       'acte_classant_JKFC006', 'acte_classant_JQGA002',
-       'acte_classant_JQGA003', 'acte_classant_JQGA004',
-       'acte_classant_KCFA005', 'acte_classant_KCFA008',
-       'acte_classant_LAFA022', 'acte_classant_LMMA004',
-       'acte_classant_LMMA006', 'acte_classant_LMMA009',
-       'acte_classant_LMMA010', 'acte_classant_LMMA012',
-       'acte_classant_MEKA008', 'acte_classant_MEMC005',
-       'acte_classant_MJEC002', 'acte_classant_NEKA014',
-       'acte_classant_NFKA007', 'acte_classant_NFKA008',
-       'acte_classant_NFMC003', 'acte_classant_PDFA001',
-       'acte_classant_QBFA001', 'acte_classant_QBFA005',
-       'acte_classant_QBFA007', 'acte_classant_QBFA008',
-       'acte_classant_QEEB152', 'acte_classant_QEFA007',
-       'acte_classant_QEFA008', 'acte_classant_QEFA020',
-       'acte_classant_QEMA004', 'acte_classant_QEMA013',
-       'acte_classant_QZFA011', 'acte_classant_QZJA011'])
+def make_df(age, sexe, acte,table_conv):
+    df = pd.DataFrame(columns=['age', 'duree_mediane','CMD','sexe_1', 'sexe_2','type_ghm_C','type_ghm_K'])
     df['age'] = [age/120]
     if sexe == 1 :
         df['sexe_1'] = 1
-    else :
+    else : 
         df['sexe_1'] = 0
     if sexe == 2 :
         df['sexe_2'] = 1
-    else :
+    else : 
         df['sexe_2'] = 0
-    for i in range(0,len(df.columns[4:])+1) :
-        if acte in df.columns[3:][i] :
-            df[df.columns[3:][i]] = 1
-        else :
-            df[df.columns[3:][i]] = 0
+    cmd = float(table_conv[table_conv['acte_classant']==acte].iloc[0]['GHM'][0:2])
+    type_ghm = table_conv[table_conv['acte_classant']==acte].iloc[0]['GHM'][2]
+    duree_mediane = table_conv[table_conv['acte_classant']==acte].iloc[0]['duree_mediane']
+    df['CMD'][df.index[0]] = cmd
+    df['duree_mediane'][df.index[0]] = duree_mediane
+    if type_ghm == 'C' :
+        df['type_ghm_C'] = 1
+    else : 
+        df['type_ghm_C'] = 0
+    if type_ghm == 'K' :
+        df['type_ghm_K'] = 1
+    else : 
+        df['type_ghm_K'] = 0
+    df['CMD'] = pd.to_numeric(df['CMD'])
+    df['duree_mediane'] = pd.to_numeric(df['duree_mediane'])
+    df['age'] = pd.to_numeric(df['age'])
     return(df)
 
-def nb_jour_lit(df,model) :
-    return(model.predict(df)[0])
+def nb_jour_lit(age,sexe,acte,table_conv,model) :
+    df = make_df(age,sexe,acte,table_conv)
+    return(model.predict(df, verbose=0)[0][0])
 
-estimation_convalescence = int(nb_jour_lit(make_df(age,sex,acte),pickled_model))
+estimation_convalescence = math.floor(nb_jour_lit(age,sex,acte,open_conv('data/conversion_table.csv'),model))
+# estimation_convalescence = int(nb_jour_lit(make_df(age,sex,acte),pickled_model))
 
 def generation_seuil():
     for i in range(nb_jour_planning-estimation_convalescence): # chaque date d'entree a l'hosto => un jour de trop grande contrainte ?
@@ -200,6 +180,8 @@ generation_classement()
 
 # jour_reservation = int(input("jour de la reservation : "))
 jour_reservation = classement[0] - 1
+if seuil[jour_reservation] == 4 and seuil[0] != 4 and nb_blocs[0] >= 0: # operation le jour-meme
+    jour_reservation = 0
 
 # Actualisation du planning
 
