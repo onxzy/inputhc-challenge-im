@@ -26,7 +26,7 @@ router.post('/ask',
   bookingValidation.name(body('lastName')).optional(),
   bookingValidation.email(body('email')).optional(),
   diseaseValidation.name(body('disease')),
-  bookingValidation.date(body('real_nights')).optional(),
+  body('real_nights').isInt({min: 0, max: 999}).optional(),
   body('acte').isString().isLength({min:6, max:8}),
   validation,
 
