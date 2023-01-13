@@ -127,7 +127,7 @@ router.patch('/capacity',
 
   async (req, res, next) => {
     try {
-      const disease = await prisma.disease.findUnique({where: {name: req.params.disease}});
+      const disease = await prisma.disease.findUnique({where: {name: req.body.disease}});
       if (!disease) return void res.status(404).json({err: errorMsg.disease.unknown});
 
       const surgery = await prisma.surgery.upsert({

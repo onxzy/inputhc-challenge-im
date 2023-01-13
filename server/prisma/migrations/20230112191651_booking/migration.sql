@@ -1,0 +1,4 @@
+-- AlterTable
+ALTER TABLE "Booking" ALTER COLUMN "email" DROP NOT NULL,
+ALTER COLUMN "firstName" DROP NOT NULL,
+ALTER COLUMN "lastName" DROP NOT NULL;

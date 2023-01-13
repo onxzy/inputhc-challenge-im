@@ -2,7 +2,7 @@ FROM node:16-bullseye AS builder
 WORKDIR /app
 
 COPY package*.json ./
-RUN npm install
+RUN npm ci
 
 COPY server.ts tsconfig.json decs.d.ts ./
 COPY app ./app
@@ -14,12 +14,12 @@ ENV API_PATH $API_PATH
 
 RUN npm run build
 
-FROM node:16-bullseye AS runner
+FROM node:16-bullseye-slim AS runner
 WORKDIR /app
 
 RUN apt-get update &&\
-    apt-get install python3-pip -y &&\
-    apt-get clean
+    apt-get install python3 python3-pip -y &&\
+    rm -rf /var/lib/apt/lists/*
 COPY scripts/requirements.txt ./scripts/
 RUN pip install -r scripts/requirements.txt
 
