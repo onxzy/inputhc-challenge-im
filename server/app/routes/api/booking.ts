@@ -241,6 +241,9 @@ router.delete('/id/:id',
   });
 
 router.delete('/all',
+  // #swagger.tags = ['Booking']
+  // #swagger.path = '/booking/all'
+
   async (req, res, next) => {
     try {
       const booking = await prisma.booking.deleteMany({});
