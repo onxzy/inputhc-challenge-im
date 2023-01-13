@@ -21,7 +21,6 @@ for i in range(0, len(real_data)):
     "max_days": 700,
     "age": real_data[0]['age'],
     "sex": real_data[0]['sexe'],
-    "cmd": real_data[0]['categorie_majeure'],
     "acte": real_data[0]['acte_classant'],
     "disease": real_data[0]['categorie_majeure']
   })
