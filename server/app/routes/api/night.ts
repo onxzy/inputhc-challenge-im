@@ -245,7 +245,7 @@ router.get('/usage/:mode',
         // If mode == 'plan' --> use nights planned
         // Else use real nights count unless it's null --> use nights planned again
         const nights_count = (req.query.mode == 'plan' || book.nigths_real == null) ? book.nights_plan : book.nigths_real;
-        console.log(`${book.nights_plan}-${book.nigths_real}`)
+        console.log(`${book.nights_plan}-${book.nigths_real}-${nights_count}`)
         const date_night_min = book.date_night;
         const date_night_max = new Date(book.date_night); 
         date_night_max.setDate(date_night_max.getDate() + nights_count - 1);
