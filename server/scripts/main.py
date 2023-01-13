@@ -51,7 +51,7 @@ date_end = sys.argv[6]
 nb_jour_planning = int(sys.argv[7])
 
 ### BDD
-r1 = requests.get(url + "night/usage/real?date_start="+date_start+"&date_end="+date_end)
+r1 = requests.get(url + "night/usage/plan?date_start="+date_start+"&date_end="+date_end)
 if (r1.status_code != 200):
     print(json.dumps({"err": "get_nights_usage", "code": r1.status_code, "url": r1.url}))
     exit()

@@ -26,6 +26,7 @@ router.post('/ask',
   bookingValidation.name(body('lastName')).optional(),
   bookingValidation.email(body('email')).optional(),
   diseaseValidation.name(body('disease')),
+  bookingValidation.date(body('real_nights')).optional(),
   body('acte').isString().isLength({min:6, max:8}),
   validation,
 
@@ -91,6 +92,7 @@ router.post('/ask',
             date_night,
             date_op,
             nights_plan: scriptReturn.nights,
+            nigths_real: req.body.real_nights ? req.body.real_nights : null,
             surgery: {
               connect: {id: surgery.id}
             }
