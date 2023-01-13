@@ -27,7 +27,6 @@ router.post('/ask',
   bookingValidation.email(body('email')).optional(),
   diseaseValidation.name(body('disease')),
   body('acte').isString().isLength({min:6, max:8}),
-  body('cmd').isString().isLength({min:1, max:4}),
   validation,
 
   (req, res, next) => {
@@ -39,7 +38,7 @@ router.post('/ask',
     let stderr = '';
     const script = spawn(
       `python3`,
-      [`${__dirname}/../../../../scripts/main.py`, req.body.age, req.body.sex, req.body.cmd, req.body.acte, req.body.date_start, date_end.toISOString().split('T')[0], req.body.max_days],
+      [`${__dirname}/../../../../scripts/main.py`, req.body.age, req.body.sex, req.body.disease, req.body.acte, req.body.date_start, date_end.toISOString().split('T')[0], req.body.max_days],
       {cwd: `${__dirname}/../../../../scripts/`})
 
     script.on('error', (err) => {
@@ -238,5 +237,17 @@ router.delete('/id/:id',
       return next(error);
     }
   });
+
+router.delete('/all',
+  async (req, res, next) => {
+    try {
+      const booking = await prisma.booking.deleteMany({});
+      return res.send();
+
+    } catch (error: any) { 
+      if (error.code == 'P2025') return res.sendStatus(404);
+      return next(error);
+    }
+  })
 
 export default router;
