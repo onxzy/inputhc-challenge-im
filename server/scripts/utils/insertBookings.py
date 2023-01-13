@@ -28,6 +28,8 @@ for i in range(0, len(real_data)):
   if (r.status_code != 200):
     print('err : ' + str(r.status_code))
     print(r.content)
+  else:
+    print('date entree : ' + r.json()['date_night'] + ' nights planned : ' + str(r.json()['nights_plan']) + ' nights real : ' + str(real_data[i]['duree_totale']))
 
 
 
