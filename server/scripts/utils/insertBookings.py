@@ -17,13 +17,13 @@ for i in range(0, len(real_data)):
 # {"age":88,"sexe":2,"acte_classant":"HMFC004","categorie_majeure":"07","duree_totale":40}
   print(str(i) + '/' + str(len(real_data)))
   r = requests.post(serverUrl + 'booking/ask', json = {
-    "date_start": "2019-01-23",
-    "max_days": 700,
-    "age": real_data[0]['age'],
-    "sex": real_data[0]['sexe'],
-    "acte": real_data[0]['acte_classant'],
-    "disease": real_data[0]['categorie_majeure'],
-    "real_nights": real_data[0]['duree_totale'],
+    "date_start": real_data[i]['date'],
+    "max_days": max(90, real_data[i]['duree_totale'] + 20),
+    "age": real_data[i]['age'],
+    "sex": real_data[i]['sexe'],
+    "acte": real_data[i]['acte_classant'],
+    "disease": real_data[i]['categorie_majeure'],
+    "real_nights": real_data[i]['duree_totale'],
   })
   if (r.status_code != 200):
     print('err : ' + str(r.status_code))

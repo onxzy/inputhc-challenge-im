@@ -252,7 +252,7 @@ router.get('/usage/:mode',
         let i = 0;
         for (var d = new Date(String(req.query.date_start)); d <= new Date(String(req.query.date_end)); d.setDate(d.getDate() + 1)) {
           if (d.toDateString() == date_night_min.toDateString()) {
-            for (let j = 0; j < nights_count; j++) {
+            for (let j = 0; j < Math.min(nights_count, days) ; j++) {
               usage[i+j] += 1;
             }
             break;
