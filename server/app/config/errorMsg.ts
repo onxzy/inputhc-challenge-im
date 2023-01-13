@@ -7,15 +7,6 @@ const errorMsg = {
     bad_length: 'validation:bad_length',
     not_string: 'validation:not_string',
   },
-  user: {
-    not_unique: 'user:not_unique',
-    admin_already_initied: 'user:admin_already_initied',
-    not_found: 'user:not_found',
-  },
-  auth: {
-    bad_password: 'auth:bad_password',
-    not_found: 'auth:not_found',
-  },
   disease: {
     unknown: 'disease:unknown'
   }

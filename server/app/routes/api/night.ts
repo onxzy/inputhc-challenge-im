@@ -8,13 +8,7 @@ import { body, param, query } from 'express-validator';
 import prisma from '../../modules/prisma';
 
 // IMPORTS
-import { validation, authValidation, diseaseValidation, nightValidation } from '../../middlewares/validation';
-import { authNZ } from '../../middlewares/passport';
-
-import { patchUser, newUser } from '../../services/auth';
-import { Provider, Role } from '@prisma/client';
-import { AuthPermissions } from '../../config/authPermissions';
-
+import { validation, diseaseValidation, nightValidation } from '../../middlewares/validation';
 
 router.post('/new',
   // #swagger.tags = ['Night']

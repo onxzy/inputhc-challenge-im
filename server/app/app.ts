@@ -8,7 +8,6 @@ dotenv();
 import helmet from 'helmet';
 import bodyParser from 'body-parser';
 import session from 'express-session';
-import passport from 'passport';
 import swaggerUi from 'swagger-ui-express';
 const cors = require('cors');
 
@@ -36,8 +35,6 @@ app.use(session({
   saveUninitialized: false,
   // cookie: {secure: true},
 }));
-require('./middlewares/passport');
-app.use(passport.session());
 
 const swaggerDocument = require('../swagger.json');
 app.use('/doc', swaggerUi.serve, swaggerUi.setup(swaggerDocument));

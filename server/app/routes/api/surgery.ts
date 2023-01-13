@@ -8,12 +8,8 @@ import { body, param, query } from 'express-validator';
 import prisma from '../../modules/prisma';
 
 // IMPORTS
-import { validation, authValidation, diseaseValidation, nightValidation, surgeryValidation } from '../../middlewares/validation';
-import { authNZ } from '../../middlewares/passport';
+import { validation, diseaseValidation, nightValidation, surgeryValidation } from '../../middlewares/validation';
 
-import { patchUser, newUser } from '../../services/auth';
-import { Provider, Role } from '@prisma/client';
-import { AuthPermissions } from '../../config/authPermissions';
 import errorMsg from '../../config/errorMsg';
 
 
